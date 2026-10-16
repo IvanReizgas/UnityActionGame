@@ -1,0 +1,83 @@
+# Region map. Format:
+#   name: / ambient:   region display name and ambient light tint (r g b, 0-1)
+#   [legend]           <char> <ground tile> [object]
+#                      object = prop name (see Art/Props/props.json) | npc:<id> | enemy:<id>
+#                               | entry:<id> | exit:<region>:<entry id>
+#   [map]              one character per cell. Text column = grid X, text row = grid Y (top row = far side).
+# In game the map is rotated 45 deg: the TOP-RIGHT of this text is the top of the screen.
+
+name: Greenhollow
+ambient: 1 1 1
+
+[legend]
+. grass
+, grass_flowers
+f forest_floor
+: path
+~ water
+T forest_floor tree_oak
+P forest_floor tree_pine
+b grass bush
+r grass rock
+k forest_floor rock
+H grass house
+W path well
+F grass campfire
+@ path entry:start
+n path entry:from_snow
+e path entry:from_desert
+1 path exit:snow:from_forest
+2 path exit:desert:from_forest
+a grass npc:elder
+m grass npc:merchant
+g path npc:guard
+w forest_floor enemy:wolf
+x grass enemy:bandit
+
+[map]
+PTPPPTTPPfPPPTTTPPTP11fTPTTTTTTPTTTTTTPTTPPPTT
+TPTTfTfPTTPTTTfTTTTT::PTTTPTPPPfPPTfTTTPTTTPTT
+TTPTffPPffTfTfffPTfP::PPTPPffPTffTfTffTTfTTTTT
+PPTffffffffTffffTfffn:ffffPfffffffffffffTffffP
+TPTfffffffffTfffffff::ffTfTTfffffffffffffffffT
+TTTffffffffffffffffT::PTfffkfffffffffffffTfTfP
+TTTffPTfffffffffffff::ffffffffffffTfffffffTTPP
+TfTffffffffffTfPffff::fffffffffffkfffffffffTTP
+TTPfffffwffffPffTPff::ffTfffffffffffwfffffffTP
+PPTfffffffffffffffff:::ffffffffkffffffffffffTT
+PTffffffffwffffffTTff::fffffffffffffffwffffffT
+PPPTffffffffffPffffff::ffffffffffffffwfffffTPT
+PffffffffffffffffffTf:::fTffffffPffffffffffPPP
+TfPffTfTTfffffffffffff::fTffTfffffffffffffTfPP
+kPTffffffTffTffffffTff::fffPfffffPffffTfffTTTT
+TPPfffPfffPkfffff,f..g::....ffffffTffffffffTTT
+fPTfPffPkfffffPff,....::.......f,fffffPfTffPfP
+TTPffTffffTffff.......::....H..ffffffffffffTPT
+PTffTffPfffffff.H.....::..,.....ffffffffffffPT
+PTTfffTfTffffff.......::........,fffffffTTfTPT
+TPTffffffffffT......,.:::..m.,.b.fffff::::e::2
+TTTfTffPff.fffr...,....::......,.P:::::::::::2
+PTPkfff........,.......::....,:::::::::fffffPf
+TTPfkf.............,.a,::,:::::::::ffffffTfPPP
+PPfTf....~~~...........W:::::::...ffffffffffTT
+fTTTf..~~~~~~~.........::@:....,.ffffffffTffTT
+TPffP.~~~~~~~~~........::........bffffffTffTTP
+PTPf..~~~~~~~~~,.......::........ffTfffffffTTT
+Tffff.~~~~~~~~~..H.....::....H...TffffffffffTT
+ffTff..~~~~~~~......,..:::......fffffPffffffTT
+TPfff....~~~............::......ffffPffTTffffT
+PTTfkf.........f....r...::b....TfTTffffPfffTfT
+PfTffff.......f,P.......::....TTffffPfffffffTT
+TTPfTfTffP.fff.fkff...,.::..TfffffffffffffffTP
+TPTffffffffffffffffffff.:::fffffffffTffffPfTPT
+TTTffffffkffffffPfTffffff:::ffff.ffffffffffTPP
+TPffffffTfffTfffTffffffTPk::::.....ffffTffffTT
+TfTfffkfffffffTffffffffffTf::::.....ffTfPffTTT
+TTffffffffTffTfTfffffffffffPT:::..x.ffffffffPP
+fTPffffTfffffTfTfffffffffffk..::F....fffffffTT
+PTPfffffTffffTfTfTfffffffTkff.x.....ffTfffPfTP
+PTfffffTfPPffffffffffffffPPff.......ffffffTfTT
+TTTfTffffffTffffffTkfffffTfffP.....ffPffffTTPT
+PTPPTTTfffPfTTTTfTfPfffTTfTfTfff.TTffTffTTPfTT
+PTTTTTPPPTTPPPTTTPTTTTTTPffTPTfTTTPPTPPTTTTTPT
+TPPPPTTTPPTPTTTPTfTTTPPTfPPTPTPTPTTPPTTTfTfTTT

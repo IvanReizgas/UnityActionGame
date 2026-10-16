@@ -1,0 +1,73 @@
+// Elder Maren - Greenhollow's village elder. Gives the wolf quest.
+// Variables: met_elder, quest_wolves (0 = not offered, 1 = active, 2 = done), killed_wolf
+
+# start
+[!met_elder] elder: Well now. A sword-arm and a red cloak. You're no farmer, that much is plain.
+[!met_elder] you: Aldric, of the Crownguard. Or what's left of it.
+[!met_elder] elder: Then you're welcome in Greenhollow, Aldric. We've little, but we share it.
+~ set met_elder
+[quest_wolves==1 & killed_wolf>=3] -> wolves_done
+[met_elder] elder: What can an old woman do for you?
+-> menu
+
+# menu
+* What is this place? -> village
+* [quest_wolves==0] You look troubled. -> wolves_offer
+* [quest_wolves==1] About the wolves... -> wolves_progress
+* Where do these roads lead? -> roads
+* Farewell, Elder. -> bye
+
+# village
+elder: Greenhollow. Forty souls, one well and more trees than sense.
+elder: We were a waystation once, when the King's road still ran east to the Sunscar.
+elder: Now the merchants come less, and the forest comes closer every year.
+-> menu
+
+# roads
+elder: North, the path climbs to Frostpeak Pass. Eskil the hunter keeps a camp up there.
+elder: East, the trees thin into the Sunscar Wastes. Sand, scorpions and Zahra's oasis, if you can find it.
+elder: Mind the south woods. Bandits have made a camp by the old firepit.
+-> menu
+
+# wolves_offer
+elder: Wolves. A pack has come down from the hills, bolder than any I remember.
+elder: They took two of Pell's goats last week, and nearly took Pell.
+* I'll deal with them. -> wolves_accept
+* What's in it for me? -> wolves_haggle
+* Not my concern. -> wolves_refuse
+
+# wolves_haggle
+elder: Ha! Honest, at least. The village can spare 40 gold, and my best healing draught.
+* Done. Where do I find them? -> wolves_accept
+* Not my concern. -> wolves_refuse
+
+# wolves_refuse
+elder: Hm. Well, the offer stands, should your heart soften.
+-> menu
+
+# wolves_accept
+~ set quest_wolves 1
+~ set killed_wolf 0
+elder: Bless you. They den in the clearings at the forest's edge, north-west and north-east of here.
+elder: Three should be enough to scatter the rest. Come back to me when it's done.
+-> bye
+
+# wolves_progress
+elder: You've put down {killed_wolf} of them so far. Three should do it.
+elder: The clearings at the forest's edge, Aldric. Go carefully.
+-> menu
+
+# wolves_done
+elder: You're back, and in one piece! Pell says the howling has stopped.
+you: Three wolves. The rest won't come back soon.
+elder: Then Greenhollow owes you. Here, as promised.
+~ set quest_wolves 2
+~ gold 40
+~ potion 1
+~ xp 30
+elder: And Aldric... if you're heading on, ask Captain Brann about the pass. He's been worried about something.
+-> menu
+
+# bye
+elder: The Light keep you.
+-> end

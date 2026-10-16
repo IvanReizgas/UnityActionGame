@@ -1,0 +1,160 @@
+{
+  "props": [
+    {
+      "name": "tree_oak",
+      "pivotX": 48,
+      "pivotY": 14,
+      "fade": true,
+      "colliderType": "ellipse",
+      "radius": 0.18,
+      "halfWidth": 0,
+      "halfHeight": 0,
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "name": "tree_pine",
+      "pivotX": 40,
+      "pivotY": 14,
+      "fade": true,
+      "colliderType": "ellipse",
+      "radius": 0.16,
+      "halfWidth": 0,
+      "halfHeight": 0,
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "name": "tree_pine_snow",
+      "pivotX": 40,
+      "pivotY": 14,
+      "fade": true,
+      "colliderType": "ellipse",
+      "radius": 0.16,
+      "halfWidth": 0,
+      "halfHeight": 0,
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "name": "bush",
+      "pivotX": 24,
+      "pivotY": 12,
+      "fade": false,
+      "colliderType": "ellipse",
+      "radius": 0.14,
+      "halfWidth": 0,
+      "halfHeight": 0,
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "name": "rock",
+      "pivotX": 24,
+      "pivotY": 12,
+      "fade": false,
+      "colliderType": "ellipse",
+      "radius": 0.18,
+      "halfWidth": 0,
+      "halfHeight": 0,
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "name": "rock_snow",
+      "pivotX": 24,
+      "pivotY": 12,
+      "fade": false,
+      "colliderType": "ellipse",
+      "radius": 0.18,
+      "halfWidth": 0,
+      "halfHeight": 0,
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "name": "rock_sand",
+      "pivotX": 24,
+      "pivotY": 12,
+      "fade": false,
+      "colliderType": "ellipse",
+      "radius": 0.18,
+      "halfWidth": 0,
+      "halfHeight": 0,
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "name": "cactus",
+      "pivotX": 24,
+      "pivotY": 12,
+      "fade": true,
+      "colliderType": "ellipse",
+      "radius": 0.1,
+      "halfWidth": 0,
+      "halfHeight": 0,
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "name": "palm",
+      "pivotX": 40,
+      "pivotY": 14,
+      "fade": true,
+      "colliderType": "ellipse",
+      "radius": 0.12,
+      "halfWidth": 0,
+      "halfHeight": 0,
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "name": "house",
+      "pivotX": 72,
+      "pivotY": 38,
+      "fade": true,
+      "colliderType": "diamond",
+      "radius": 0,
+      "halfWidth": 0.9,
+      "halfHeight": 0.45,
+      "offsetX": 0.5,
+      "offsetY": 0.5
+    },
+    {
+      "name": "tent",
+      "pivotX": 32,
+      "pivotY": 16,
+      "fade": true,
+      "colliderType": "diamond",
+      "radius": 0,
+      "halfWidth": 0.4,
+      "halfHeight": 0.2,
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "name": "campfire",
+      "pivotX": 20,
+      "pivotY": 12,
+      "fade": false,
+      "colliderType": "ellipse",
+      "radius": 0.12,
+      "halfWidth": 0,
+      "halfHeight": 0,
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    },
+    {
+      "name": "well",
+      "pivotX": 24,
+      "pivotY": 14,
+      "fade": false,
+      "colliderType": "ellipse",
+      "radius": 0.2,
+      "halfWidth": 0,
+      "halfHeight": 0,
+      "offsetX": 0.0,
+      "offsetY": 0.0
+    }
+  ]
+}

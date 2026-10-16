@@ -1,0 +1,21 @@
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+*.csproj
+*.sln
+*.slnx
+*.pidb
+*.userprefs
+.DS_Store
+Tools/.venv/
+*.log
+.vscode/
+.idea/
+# Windows / Unity crash leftovers
+Thumbs.db
+crashlytics-build.properties

@@ -1,0 +1,76 @@
+# Region map. Format:
+#   name: / ambient:   region display name and ambient light tint (r g b, 0-1)
+#   [legend]           <char> <ground tile> [object]
+#                      object = prop name (see Art/Props/props.json) | npc:<id> | enemy:<id>
+#                               | entry:<id> | exit:<region>:<entry id>
+#   [map]              one character per cell. Text column = grid X, text row = grid Y (top row = far side).
+# In game the map is rotated 45 deg: the TOP-RIGHT of this text is the top of the screen.
+
+name: Sunscar Wastes
+ambient: 1 0.97 0.9
+
+[legend]
+. sand
+d dune
+c cracked_earth
+: cracked_earth
+~ water
+g grass
+C sand cactus
+R sand rock_sand
+p grass palm
+t sand tent
+F sand campfire
+z grass npc:nomad
+s sand enemy:scorpion
+x sand enemy:bandit
+w cracked_earth entry:from_forest
+1 cracked_earth exit:forest:from_desert
+
+[map]
+RdRddRCddCCRRCC.RRRRRdRRC...RCRRRRcCRc...RRCR.
+CdRRRCRCCRCRRR..R..RddRRRRCdd.R.CcCR..R.C...C.
+RRddddddddd.......ddddddddddd....cC.........R.
+RCdddddddd........dddCddddddd.....C.........R.
+RC..dddddd.......dddddddRddddR.............dRR
+R....dddC....C......dddddddd..............ddCR
+RC...dd.............dddddddd.........R..ddddd.
+CR..C...............RdddCdd............dddddC.
+RC.......ccC.......Cdddddd.........s..ddddddR.
+C.......ccc...C.....ddddd...R........dddddddCd
+RC.....ccRs........ddddd.....C..C....dRddddddd
+R.....cccccRsccc...ddd..............ddddddddCd
+R....ccccccccccc.....C...........R..dddddddddR
+.C...ccRccccccc.........RR.....c....dCddddddRC
+R..C.....cccccC.....C........ccc....ddddRddddd
+dR......Cccccc..............cccc........ddCddR
+.R.......cRcc............R.cccCc........dddCR.
+........cccc........C.....ccgccc........dRd..C
+R...C...ccc.........F.t..ggggggg............RR
+Rddd....................gpgggpggg...........Cc
+Cddd.................z.ggggggggggp.........RCR
+1::w:::...........ddC.gggggg~gggggg........cRc
+1:::::::::::::::::Rdd.pggg~~~~~gggg.......ccRR
+dRd.C.:::::::::::::::::gg~~~~~~~ggg....C..ccRR
+RR.......ddd.dddd::::::g~~~~~~~~~gpg........Rc
+R....C...C..ddddddCd..ggg~~~~~~~gggd........RC
+RR......C...dddddddd..pggg~~~~~ggggd.........c
+............ddddddd...gggggg~ggggggd........cc
+.R..........dRddddd....ggggggggggpdd....s..CCc
+CR.........dRddddd......gpgggpgggdddddd.....RC
+CR.......CRdddddd........gggggggdddddddd....R.
+CC...cc..C.CdddC....R......CgdddddCddRdd....CC
+RCcccccc...dd.........C..C..dddddddddddd.....R
+cRccccc.C.........R..R......ddddddddddd.....C.
+Ccccccc...............cc....dddRdddddd......CC
+RCcccc..............cccc.......dCddddd.......C
+cRcccc........s.C..cRRcC........ddddd.......RC
+cRccc.............ccccc......C..ddd..s.....RRC
+RRcc......C.....scccCcc.........dx...R......C.
+cc...............ccccCc.........R...........R.
+R.R.............ccccccc..c.........x....C...RR
+CR.........d....cccccccccc.............C..c.CC
+.RC......ddd....cccc..cRc.....C....c.C.ccccc..
+CC.....ddddd.C........cc..........R...CcccccRC
+RCC.RRCRCdRR.CCRRRRRRR...RCR.RR.RRR.CRcRccRR.R
+.R.C.RCRCdRRR..R.CCR.R..RRC.R.R..C.CCccRCRC.RC

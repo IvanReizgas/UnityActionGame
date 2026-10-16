@@ -1,0 +1,22 @@
+# Normalise line endings so the repo works the same on Windows and macOS.
+* text=auto
+
+# Unity YAML assets: merge as text
+*.unity   text
+*.prefab  text
+*.asset   text
+*.meta    text
+*.mat     text
+
+# Binary files: never touch line endings
+*.png  binary
+*.jpg  binary
+*.psd  binary
+*.aseprite binary
+*.wav  binary
+*.ogg  binary
+*.mp3  binary
+*.ttf  binary
+*.otf  binary
+*.dll  binary
+*.exe  binary

@@ -1,0 +1,43 @@
+// Captain Brann - guards the north road. Gives the bandit quest.
+// Variables: quest_bandits (0/1/2), killed_bandit
+
+# start
+[quest_bandits==1 & killed_bandit>=2] -> bandits_done
+guard: Halt. ...Ah, you're the Crownguard fellow. Maren vouched for you.
+-> menu
+
+# menu
+* What are you guarding? -> pass
+* [quest_bandits==0] Need a hand with anything? -> bandits_offer
+* [quest_bandits==1] Still working on those bandits. -> bandits_progress
+* As you were, Captain. -> end
+
+# pass
+guard: The road north to Frostpeak. Something's been coming down from the mountains.
+guard: Frost wolves. Bigger than our grey ones, and they don't scare.
+guard: Eskil sends word when he can, but it's been a month since his last.
+-> menu
+
+# bandits_offer
+guard: Since you ask. A band of cutthroats camps south-east of the village, around the old firepit.
+guard: I've four men and a wall that needs mending. I can't spare anyone to clear them out.
+* Consider it done. -> bandits_accept
+* Maybe later. -> menu
+
+# bandits_accept
+~ set quest_bandits 1
+~ set killed_bandit 0
+guard: Good. There are at least two. Bring me peace on the south road and I'll see you paid.
+-> end
+
+# bandits_progress
+guard: {killed_bandit} down so far. South-east, by the firepit.
+-> menu
+
+# bandits_done
+guard: The south road's quiet. Tobin's carts are rolling again. That's your doing.
+~ set quest_bandits 2
+~ gold 60
+~ xp 40
+guard: Sixty gold, from the village purse. And my thanks, which is worth less but is sincerely meant.
+-> menu

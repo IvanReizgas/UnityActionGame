@@ -1,0 +1,44 @@
+// Zahra - desert nomad at the oasis. Scorpion quest.
+
+# start
+[quest_scorpions==1 & killed_scorpion>=4] -> done
+[!met_zahra] nomad: You walked here? Through the Sunscar? In steel? Either you are very brave or the sun has cooked you.
+[!met_zahra] you: A little of both, I think.
+~ set met_zahra
+-> menu
+
+# menu
+* What is this place? -> oasis
+* [quest_scorpions==0] Do you need help? -> offer
+* [quest_scorpions==1] The scorpions... -> progress
+* Peace be with you. -> end
+
+# oasis
+nomad: The last sweet water for three days in any direction. My family has kept it for nine generations.
+nomad: Once caravans stopped here every week. Now only the scorpions visit, and they do not trade.
+-> menu
+
+# offer
+nomad: The scorpions are breeding in the dunes. Every season there are more.
+nomad: Kill four of them and the rest will keep their distance. I will give you what I can.
+* I will. -> accept
+* Not today. -> menu
+
+# accept
+~ set quest_scorpions 1
+~ set killed_scorpion 0
+nomad: Strike fast and do not let the tail touch you. May the wind be at your back.
+-> end
+
+# progress
+nomad: {killed_scorpion} of four. The dunes to the north and south are thick with them.
+-> menu
+
+# done
+nomad: The dunes are quieter. You have done my family a great service.
+~ set quest_scorpions 2
+~ gold 50
+~ potion 2
+~ xp 45
+nomad: Take these, and come back whenever you need water. The oasis is yours too, now.
+-> menu

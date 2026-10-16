@@ -1,0 +1,71 @@
+# Region map. Format:
+#   name: / ambient:   region display name and ambient light tint (r g b, 0-1)
+#   [legend]           <char> <ground tile> [object]
+#                      object = prop name (see Art/Props/props.json) | npc:<id> | enemy:<id>
+#                               | entry:<id> | exit:<region>:<entry id>
+#   [map]              one character per cell. Text column = grid X, text row = grid Y (top row = far side).
+# In game the map is rotated 45 deg: the TOP-RIGHT of this text is the top of the screen.
+
+name: Frostpeak Pass
+ambient: 0.92 0.96 1.05
+
+[legend]
+. snow
+: snow_path
+i ice
+P snow tree_pine_snow
+R snow rock_snow
+H snow house
+F snow campfire
+h snow npc:hunter
+w snow enemy:frost_wolf
+s snow_path entry:from_forest
+1 snow_path exit:forest:from_snow
+
+[map]
+PPPPP.PPPP.P.PPPPPPPP.PPP.P.PPPPPPPPPPP.PPPPPP
+PPPPPPPPPPPPPPPRPPP.PPPPPPPPPPP.PPPPPPPPPPPP.P
+P........P..R..PPP.....RP......P...RP..R...P.P
+......P........P..P.P.PP..P.................PP
+PP....P.P.....PP....P.PP....P.....P..P......PP
+.P..............P..P....P..........P.P.P....PP
+PP......w..P..P.....P.....PP..P..R...w.P....PP
+PP.....R....P.....P.....R.PP.....PP.PP..P...PP
+PP..........P.........P........PP.....PwR...P.
+P.........P.........P.P..R..................PP
+P.R....R......i.....P.PP............P.......PP
+PP.R.P....iiiiiiiiiP.........H..........PP.RPP
+.P.....P.iiiiiiiiiii................RPP.....P.
+RP..P.RPiiiiiiiiiiiii................R.......P
+P.....Piiiiiiiiiiiiiii...............P.P..P..P
+PP.....iiiiiiiiiiiiiii.P.....h.F..........P..P
+PP....iiiiiiiiiiiiiiiii..............P..P.PPP.
+.P.....iiiiiiiiiiiiiiiP..............P.PP...PP
+PP....Piiiiiiiiiiiiiii......::...........P..P.
+PP.....Piiiiiiiiiiiii.......::....P.........PP
+PP..P..PPiiiiiiiiiii.....P.:::..............PP
+PP.P......iiiiiiiii.R.....:::....P...R...P..PP
+PP..P..PP.....iP.........P::...........PP...PP
+PPP....P........P.........::.P......P.......P.
+PP..P..PP........P.P..P.P:::.......P.R...P..PP
+PP..........P........P.P:::......P.....R....PP
+PP.....PPPP..P.....P....::.P...........P....P.
+PP...P...P.P.P..PPP..P..::....P............PPP
+PPP....P..P.P..P.......:::........P.P........P
+PPP.P...........P.....:::..P.P....P...........
+.P........w......P....::...P.PP...R.w.........
+P.P.P..PR....P.....P..::...P........RP..P..PPP
+PP..........w.P.....RP::................P...PP
+PP.P.....PP........P..::...PP.......P.w....RPP
+PPP........P.........:::R.....PP.....P.....P.P
+.P..PP........R....P.::PPP....P....P....P..PPP
+PPR....P...P.PP......::P..........P........PPP
+P......PP........PP..::PPP..................P.
+PP....P....P.P.P...P.::......R...P...........P
+PP....P.P...P....PP..::....P..P.......P...P.PP
+PP.........R.P....PP.::..P.P.....P...P......PP
+PP.......P....P..P...::..P....P.......P..P...P
+PP.P...P..R.P...PP.Ps::.......PP........P..PPP
+PP........P.....P.PP::...P....P........P....PP
+RP...PPPPPPPPPP.PPPP::PPP.P.PPPPP.PPPPPPP.PP.P
+PPPPPPPPPPPPPPPPPPPP11PPPPPPP..PPPP.PPPPPPPPP.

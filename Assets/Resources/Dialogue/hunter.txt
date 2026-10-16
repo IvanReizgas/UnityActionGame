@@ -1,0 +1,43 @@
+// Eskil - hunter at Frostpeak Pass. Frost wolf quest.
+
+# start
+[quest_frost==1 & killed_frost_wolf>=3] -> done
+[!met_eskil] hunter: Stop right there. ...You're not a wolf. Good. Sit by the fire before your fingers fall off.
+[!met_eskil] you: Captain Brann's been waiting on word from you.
+[!met_eskil] hunter: Has he. Well, the word is "wolves", and it's not a happy one.
+~ set met_eskil
+-> menu
+
+# menu
+* Tell me about the frost wolves. -> wolves
+* [quest_frost==0] I can help with them. -> offer
+* [quest_frost==1] Still hunting. -> progress
+* I'll be going. -> end
+
+# wolves
+hunter: White as the snow, twice the size of a grey. They came over the high pass at first frost.
+hunter: Something drove them out of the mountains. I don't want to meet whatever that was.
+-> menu
+
+# offer
+hunter: You? ...Aye, all right. You've the arms for it. Three of them, and I'll call the pass safe.
+* Three it is. -> accept
+* Let me warm up first. -> menu
+
+# accept
+~ set quest_frost 1
+~ set killed_frost_wolf 0
+hunter: They prowl the woods south of the lake and up by the ridge. Don't go out on the ice if you can help it.
+-> end
+
+# progress
+hunter: {killed_frost_wolf} so far. Keep your back to the trees.
+-> menu
+
+# done
+hunter: Three pelts' worth of frost wolf. You've earned a place at this fire, Crownguard.
+~ set quest_frost 2
+~ gold 70
+~ xp 60
+hunter: Tell Brann the pass is open. And tell him I saw tracks up on the ridge that weren't wolves.
+-> menu

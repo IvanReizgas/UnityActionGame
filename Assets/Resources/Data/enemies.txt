@@ -1,0 +1,7 @@
+# Enemies that can be placed in region maps with "enemy:<id>". Killing one adds 1 to the story variable killed_<id>.
+# Distances are in ground units (one tile is about 0.7 wide).
+# id        | name           | sheet      | hp | damage | speed | xp | gold | aggro range | attack range | foot radius
+wolf        | Grey Wolf      | wolf       | 16 | 4      | 2.4   | 8  | 2    | 3.5         | 0.55         | 0.2
+frost_wolf  | Frost Wolf     | frost_wolf | 26 | 6      | 2.6   | 14 | 3    | 3.8         | 0.55         | 0.2
+scorpion    | Sand Scorpion  | scorpion   | 22 | 6      | 1.5   | 12 | 3    | 3.0         | 0.55         | 0.22
+bandit      | Bandit         | bandit     | 24 | 5      | 1.9   | 15 | 5    | 4.0         | 0.5          | 0.17

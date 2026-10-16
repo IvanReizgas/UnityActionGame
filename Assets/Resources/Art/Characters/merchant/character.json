@@ -1,0 +1,25 @@
+{
+  "frameWidth": 64,
+  "frameHeight": 64,
+  "pivotX": 32,
+  "pivotY": 10,
+  "ppu": 64,
+  "animations": [
+    {
+      "name": "idle",
+      "file": "idle",
+      "frames": 4,
+      "fps": 5,
+      "loop": true,
+      "hitFrame": -1
+    },
+    {
+      "name": "walk",
+      "file": "walk",
+      "frames": 8,
+      "fps": 12,
+      "loop": true,
+      "hitFrame": -1
+    }
+  ]
+}

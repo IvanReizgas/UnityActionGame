@@ -1,0 +1,7 @@
+# NPCs that can be placed in region maps with "npc:<id>".
+# id | display name | character sheet (Art/Characters/<sheet>) | portrait (Art/Portraits/<name>) | dialogue file (Dialogue/<file>.txt) | idle or wander
+elder    | Elder Maren      | elder    | elder    | elder    | idle
+merchant | Tobin the Trader | merchant | merchant | merchant | wander
+guard    | Captain Brann    | guard    | guard    | guard    | idle
+nomad    | Zahra            | nomad    | nomad    | nomad    | idle
+hunter   | Eskil            | hunter   | hunter   | hunter   | wander

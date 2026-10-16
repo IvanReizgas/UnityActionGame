@@ -1,0 +1,36 @@
+// Tobin the Trader - sells potions, gossips.
+
+# start
+[!met_tobin] merchant: A customer! A real one, with boots and everything! Tobin's the name, trade's the game.
+~ set met_tobin
+[met_tobin] merchant: Back again! You've got the look of someone who needs a potion.
+-> menu
+
+# menu
+merchant: You've got {gold} gold and {potions} potions on you, by my eye.
+* [gold>=15] Buy a healing potion (15 gold) -> buy
+* [gold<15] I can't afford anything. -> poor
+* Any news? -> news
+* Just looking. -> bye
+
+# buy
+[potions>=5] merchant: Your pack's full, friend! Five's all you can carry.
+[potions>=5] -> menu
+~ gold -15
+~ potion 1
+merchant: Pleasure doing business. Drink it before you need it, that's my advice.
+-> menu
+
+# poor
+merchant: Ah. Well, the wolves and bandits around here carry coin, if you're not squeamish.
+-> menu
+
+# news
+[quest_wolves==0] merchant: The Elder's been fretting about wolves. Might be coin in it for a sword like yours.
+[quest_wolves==2] merchant: Word is you sorted out those wolves. Drinks are on... well, not on me, but on someone.
+merchant: And the bandits in the south woods have been stopping my carts. Brann won't spare the men.
+-> menu
+
+# bye
+merchant: Come back when your purse is heavier!
+-> end
