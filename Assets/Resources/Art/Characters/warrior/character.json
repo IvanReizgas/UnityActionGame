@@ -1,15 +1,15 @@
 {
-  "frameWidth": 64,
-  "frameHeight": 64,
-  "pivotX": 32,
-  "pivotY": 10,
+  "frameWidth": 80,
+  "frameHeight": 80,
+  "pivotX": 40,
+  "pivotY": 6,
   "ppu": 64,
   "animations": [
     {
       "name": "idle",
       "file": "idle",
       "frames": 4,
-      "fps": 5,
+      "fps": 4,
       "loop": true,
       "hitFrame": -1
     },
@@ -17,7 +17,7 @@
       "name": "walk",
       "file": "walk",
       "frames": 8,
-      "fps": 12,
+      "fps": 10,
       "loop": true,
       "hitFrame": -1
     },
@@ -28,6 +28,14 @@
       "fps": 16,
       "loop": false,
       "hitFrame": 3
+    },
+    {
+      "name": "dodge",
+      "file": "dodge",
+      "frames": 6,
+      "fps": 12,
+      "loop": false,
+      "hitFrame": -1
     }
   ]
 }

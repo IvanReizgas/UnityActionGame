@@ -1,0 +1,36 @@
+{
+  "group_id": "4d08e2c6-d108-4e6b-a3b2-574ac6419eee",
+  "states": [
+    {
+      "character": {
+        "id": "9c5b6779-3d5a-4f46-b95e-67b8e29da6dc",
+        "name": "feet longer, realist",
+        "prompt": "a warrior with a shirt and pants without armor, long hair, fair skinned, carries a sword. Make the fett longer, providing realistic propoertions",
+        "size": {
+          "width": 48,
+          "height": 48
+        },
+        "template_id": "mannequin",
+        "directions": 8,
+        "view": "low top-down",
+        "created_at": "2026-10-16T12:04:58.467963+00:00"
+      },
+      "folder": "feet_longer_realist",
+      "frames": {
+        "rotations": {
+          "south": "feet_longer_realist/rotations/south.png",
+          "south-east": "feet_longer_realist/rotations/south-east.png",
+          "east": "feet_longer_realist/rotations/east.png",
+          "north-east": "feet_longer_realist/rotations/north-east.png",
+          "north": "feet_longer_realist/rotations/north.png",
+          "north-west": "feet_longer_realist/rotations/north-west.png",
+          "west": "feet_longer_realist/rotations/west.png",
+          "south-west": "feet_longer_realist/rotations/south-west.png"
+        },
+        "animations": {}
+      }
+    }
+  ],
+  "export_version": "3.1",
+  "export_date": "2026-10-16T12:07:30.561642"
+}

@@ -19,3 +19,5 @@ Tools/.venv/
 # Windows / Unity crash leftovers
 Thumbs.db
 crashlytics-build.properties
+__pycache__/
+*.pyc

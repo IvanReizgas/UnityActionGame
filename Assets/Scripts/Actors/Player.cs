@@ -7,7 +7,7 @@ public class Player : MonoBehaviour
 
     public const string DisplayName = "Aldric";
     const float MoveSpeed = 2.6f;          // ground units / second
-    const float RollSpeed = 7f, RollDuration = 0.22f, RollCooldown = 0.6f;
+    const float RollSpeed = 4.5f, RollDuration = 0.4f, RollCooldown = 0.7f; // slide: ~1.8 ground units
     const float AttackRange = 0.85f, AttackArc = 75f, AttackMoveFactor = 0.2f;
     const float InteractRange = 1.1f;
     const int MaxPotions = 5;
@@ -22,6 +22,10 @@ public class Player : MonoBehaviour
     public float AttackDamage => 6f + Level * 1.5f;
     public float RollReady => 1f - Mathf.Clamp01(rollCd / RollCooldown);
     public Npc InteractTarget { get; private set; }
+
+    // Dev/test hooks (used by ScreenshotMode): fake movement input and a dodge request.
+    public static Vector2? DebugMove;
+    public static bool DebugDodge;
 
     Rigidbody2D rb;
     Vector2 move;               // ground space
@@ -81,9 +85,11 @@ public class Player : MonoBehaviour
         rollCd -= dt;
 
         var input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        if (DebugMove.HasValue) input = DebugMove.Value;
         move = input.sqrMagnitude > 1f ? input.normalized : input;
 
         InteractTarget = FindInteractTarget();
+        if (rollTimer <= 0f) Anim.Speed = 1f;
 
         if (rollTimer > 0f)
         {
@@ -102,7 +108,7 @@ public class Player : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0)) Attack(MouseDirection());
             else if (Input.GetKeyDown(KeyCode.J)) Attack(move != Vector2.zero ? move : Anim.Facing);
-            else if (Input.GetKeyDown(KeyCode.Space) && rollCd <= 0f) Roll();
+            else if ((Input.GetKeyDown(KeyCode.Space) || DebugDodge) && rollCd <= 0f) { DebugDodge = false; Roll(); return; } // don't let the walk/idle code below override the dodge
         }
 
         if (Input.GetKeyDown(KeyCode.E) && InteractTarget != null && Time.frameCount != gm.DialogueEndFrame) gm.StartDialogue(InteractTarget);
@@ -163,7 +169,14 @@ public class Player : MonoBehaviour
     {
         rollDir = move != Vector2.zero ? move.normalized : Anim.Facing;
         Anim.SetFacing(rollDir);
-        Anim.Play("walk");
+        // Use a dedicated "dodge" animation when the sheet has one (dodge.png), stretched to fit the roll.
+        var dodge = Anim.Sheet.Get("dodge");
+        if (dodge != null)
+        {
+            Anim.Play("dodge", true);
+            Anim.Speed = dodge.Duration / RollDuration;
+        }
+        else Anim.Play("walk");
         rollTimer = RollDuration;
         rollCd = RollCooldown;
         Health.InvulnerableTimer = RollDuration + 0.05f;
