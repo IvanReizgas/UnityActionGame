@@ -12,7 +12,7 @@ south, south-west, west, north-west, north, north-east, east, south-east.
 - Uses the export's own animation frames when it has them (any animation whose name contains
   "idle", "walk" or "attack"/"slash").
 - Otherwise builds placeholder animations from the single rotation pose:
-    idle   = breathing (upper body bobs 1px)
+    idle   = breathing (upper body bobs 1px), or the still pose with --static-idle
     walk   = body bob + alternating leg lift / stride shear (rough!)
     attack = forward lunge (the game adds a slash effect on the hit frame)
 - Also writes a head-and-shoulders portrait from the south-facing pose.
@@ -41,7 +41,12 @@ DIR_VEC = {d: (math.cos(math.radians(a)), math.sin(math.radians(a)))
            for d, a in zip(DIRS, [270, 225, 180, 135, 90, 45, 0, 315])}
 
 FRAME = 80          # output frame size (room for wide poses like slides)
+STATIC_IDLE = False # set by --static-idle: idle is the plain pose, no breathing
 LEG_STRETCH = 0.0   # set by --leg-stretch: make legs this much longer (0.12 = 12%)
+TORSO_STRETCH = 0.0 # set by --torso-stretch: make the torso (neck to hips) longer; the head is never stretched
+THIGH_STRETCH = 0.0 # set by --thigh-stretch: extra stretch for the upper legs (hips to knees) only
+HEAD_FRACTION = 0.2 # top 20% of the figure counts as the head
+KNEE_FRACTION = 0.5 # knees sit halfway between hips and feet
 STRETCH_KINDS = ("idle", "walk", "attack")  # not dodge: in a crouch/slide the "legs" rows contain the torso
 PIVOT = (40, 6)     # feet position in the output frame, from bottom-left
 
@@ -132,18 +137,37 @@ def place(img, anchor_x, bottom, dx=0, dy=0):
     return frame
 
 
-def stretch_legs(img, hip_y, bottom):
-    """Stretch the rows from the hips down by LEG_STRETCH (nearest-neighbour, so pixels stay crisp).
-    Returns the taller image and the new index of the bottom row."""
-    if LEG_STRETCH <= 0 or hip_y >= img.shape[0]:
-        return img, bottom
-    hip_y = max(0, int(hip_y))
-    legs = img[hip_y:]
-    n = legs.shape[0]
-    new_n = int(round(n * (1 + LEG_STRETCH)))
+def stretch_rows(img, y0, y1, factor):
+    """Stretch rows [y0, y1) vertically by `factor` (nearest-neighbour, so pixels stay crisp).
+    Returns the taller image and how many rows were added."""
+    y0, y1 = max(0, int(y0)), min(img.shape[0], int(y1))
+    if factor <= 0 or y1 <= y0:
+        return img, 0
+    n = y1 - y0
+    new_n = int(round(n * (1 + factor)))
     idx = np.minimum((np.arange(new_n) * n / new_n).astype(int), n - 1)
-    out = np.concatenate([img[:hip_y], legs[idx]], axis=0)
-    return out, bottom + (new_n - n)
+    out = np.concatenate([img[:y0], img[y0:y1][idx], img[y1:]], axis=0)
+    return out, new_n - n
+
+
+def stretch_legs(img, hip_y, bottom, torso_len=0, extra_leg=0.0):
+    """Apply TORSO_STRETCH to the torso (torso_len rows above the hips), THIGH_STRETCH to the upper legs
+    and LEG_STRETCH (+ extra_leg) from the hips down to the feet. Rows below the feet are left alone.
+    Returns the taller image and the new index of the bottom row."""
+    added_total = 0
+    if TORSO_STRETCH > 0 and torso_len > 0:
+        img, added = stretch_rows(img, hip_y - torso_len, hip_y, TORSO_STRETCH)
+        hip_y += added
+        added_total += added
+    if THIGH_STRETCH > 0:
+        thigh = int(round((bottom + added_total - hip_y) * KNEE_FRACTION))
+        img, added = stretch_rows(img, hip_y, hip_y + thigh, THIGH_STRETCH)
+        added_total += added
+    leg_factor = (1 + LEG_STRETCH) * (1 + extra_leg) - 1
+    if leg_factor > 0:
+        img, added = stretch_rows(img, hip_y, bottom + added_total + 1, leg_factor)
+        added_total += added
+    return img, bottom + added_total
 
 
 def shift_region(img, y0, y1, dx, dy, x_mask=None):
@@ -240,14 +264,29 @@ def build(src, name, portrait_name, anim_files=None, fps_override=None):
         info[d] = (ax, top, waist, bottom)
     # hips sit at ~55% of the pose height; used to find the legs in every animation frame
     leg_len = {d: info[d][3] - info[d][2] for d in DIRS}
+    # torso = from below the head down to the hips
+    head_len = {d: int((info[d][3] - info[d][1]) * HEAD_FRACTION) for d in DIRS}
+    torso_len = {d: info[d][2] - (info[d][1] + head_len[d]) for d in DIRS}
+    # The rotation pose and the walk GIFs can be drawn at slightly different heights. Give the
+    # animations built from the pose (idle, attack) extra leg length so they match the walk.
+    pose_extra_leg = {d: 0.0 for d in DIRS}
+    if "walk" in gif_anims and (LEG_STRETCH > 0 or TORSO_STRETCH > 0 or THIGH_STRETCH > 0):
+        for d in DIRS:
+            heights = []
+            for fr in gif_anims["walk"][0][d]:
+                ys = np.nonzero((fr[:, :, 3] > 0).any(axis=1))[0]
+                heights.append(ys.max() - ys.min() + 1)
+            diff = float(np.median(heights)) - (info[d][3] - info[d][1] + 1)
+            if diff > 0:
+                pose_extra_leg[d] = diff / max(1, leg_len[d])
 
-    def placed(img, d, bottom, stretch, dx=0, dy=0, hip=None):
+    def placed(img, d, bottom, stretch, dx=0, dy=0, hip=None, extra_leg=0.0):
         """place() with the legs stretched first; hip defaults to the pose's leg length above `bottom`."""
         ax = info[d][0]
-        if stretch and LEG_STRETCH > 0:
+        if stretch and (LEG_STRETCH > 0 or TORSO_STRETCH > 0 or THIGH_STRETCH > 0):
             if hip is None:
                 hip = bottom - leg_len[d]
-            img, bottom = stretch_legs(img, hip, bottom)
+            img, bottom = stretch_legs(img, hip, bottom, torso_len[d], extra_leg)
         return place(img, ax, bottom, dx, dy)
 
     def from_gifs(kind):
@@ -260,11 +299,14 @@ def build(src, name, portrait_name, anim_files=None, fps_override=None):
             for fr in frames:
                 union[fr[:, :, 3] > 0] = fr[fr[:, :, 3] > 0]
             ax, bottom = feet_anchor(union)
-            if kind in STRETCH_KINDS and LEG_STRETCH > 0:
-                hip = bottom - leg_len[d]
+            if kind in STRETCH_KINDS and (LEG_STRETCH > 0 or TORSO_STRETCH > 0 or THIGH_STRETCH > 0):
                 res[d] = []
                 for fr in frames:
-                    tall, new_bottom = stretch_legs(fr, hip, bottom)
+                    # measure from the top of this frame's figure, so the same body rows are
+                    # stretched in every frame even while the body bobs (prevents flicker)
+                    top = np.nonzero((fr[:, :, 3] > 0).any(axis=1))[0].min()
+                    hip = top + head_len[d] + torso_len[d]
+                    tall, new_bottom = stretch_legs(fr, hip, bottom, torso_len[d])
                     res[d].append(place(tall, ax, new_bottom))
             else:
                 res[d] = [place(fr, ax, bottom) for fr in frames]
@@ -291,8 +333,10 @@ def build(src, name, portrait_name, anim_files=None, fps_override=None):
         idle = {}
         for d, img in poses.items():
             ax, top, waist, bottom = info[d]
-            idle[d] = [placed(breathe(img, top, waist, a), d, bottom, True, hip=waist) for a in (0, 0, 1, 1)]
-        write("idle", idle, 4, True)
+            bobs = (0,) if STATIC_IDLE else (0, 0, 1, 1)  # breathing = upper body bobs 1px
+            idle[d] = [placed(breathe(img, top, waist, a), d, bottom, True, hip=waist, extra_leg=pose_extra_leg[d])
+                       for a in bobs]
+        write("idle", idle, 4, True, source="still pose" if STATIC_IDLE else None)
 
     # walk
     if "walk" in gif_anims:
@@ -303,7 +347,8 @@ def build(src, name, portrait_name, anim_files=None, fps_override=None):
         walk = {}
         for d, img in poses.items():
             ax, top, waist, bottom = info[d]
-            walk[d] = [placed(walk_frame(img, d, f / 8 * 2 * math.pi, top, waist, bottom, ax), d, bottom, True, hip=waist)
+            walk[d] = [placed(walk_frame(img, d, f / 8 * 2 * math.pi, top, waist, bottom, ax), d, bottom, True, hip=waist,
+                              extra_leg=pose_extra_leg[d])
                        for f in range(8)]
         write("walk", walk, 10, True)
 
@@ -320,7 +365,8 @@ def build(src, name, portrait_name, anim_files=None, fps_override=None):
         for d, img in poses.items():
             ax, top, waist, bottom = info[d]
             vx, vy = DIR_VEC[d]
-            attack[d] = [placed(img, d, bottom, True, dx=int(round(vx * k)), dy=int(round(vy * k * 0.5)), hip=waist)
+            attack[d] = [placed(img, d, bottom, True, dx=int(round(vx * k)), dy=int(round(vy * k * 0.5)), hip=waist,
+                                extra_leg=pose_extra_leg[d])
                          for k in lunge]
         write("attack", attack, 16, False, hit=3)
 
@@ -386,8 +432,17 @@ if __name__ == "__main__":
     ap.add_argument("--fps", action="append", default=[], metavar="KIND=FPS", help="e.g. walk=10")
     ap.add_argument("--leg-stretch", type=float, default=0.0,
                     help="make the legs longer in idle/walk/attack, e.g. 0.12 = 12%% (originals are not changed)")
+    ap.add_argument("--torso-stretch", type=float, default=0.0,
+                    help="make the torso (neck to hips) longer, e.g. 0.1 = 10%%; the head keeps its size")
+    ap.add_argument("--thigh-stretch", type=float, default=0.0,
+                    help="extra stretch for the upper legs only (hips to knees), e.g. 0.2 = 20%%")
+    ap.add_argument("--static-idle", action="store_true",
+                    help="idle is the still pose (no breathing); ignored if an idle animation is supplied")
     a = ap.parse_args()
     LEG_STRETCH = a.leg_stretch
+    STATIC_IDLE = a.static_idle
+    TORSO_STRETCH = a.torso_stretch
+    THIGH_STRETCH = a.thigh_stretch
     anims = dict(x.split("=", 1) for x in a.anim)
     fps = {k: float(v) for k, v in (x.split("=", 1) for x in a.fps)}
     print(f"Importing {a.source} -> Art/Characters/{a.name}/")

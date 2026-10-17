@@ -8,7 +8,7 @@
     {
       "name": "idle",
       "file": "idle",
-      "frames": 4,
+      "frames": 1,
       "fps": 4,
       "loop": true,
       "hitFrame": -1
