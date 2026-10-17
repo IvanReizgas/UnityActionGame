@@ -41,6 +41,8 @@ DIR_VEC = {d: (math.cos(math.radians(a)), math.sin(math.radians(a)))
            for d, a in zip(DIRS, [270, 225, 180, 135, 90, 45, 0, 315])}
 
 FRAME = 80          # output frame size (room for wide poses like slides)
+LEG_STRETCH = 0.0   # set by --leg-stretch: make legs this much longer (0.12 = 12%)
+STRETCH_KINDS = ("idle", "walk", "attack")  # not dodge: in a crouch/slide the "legs" rows contain the torso
 PIVOT = (40, 6)     # feet position in the output frame, from bottom-left
 
 
@@ -128,6 +130,20 @@ def place(img, anchor_x, bottom, dx=0, dy=0):
             if 0 <= tx < FRAME and img[y, x, 3] > 0:
                 frame[ty, tx] = img[y, x]
     return frame
+
+
+def stretch_legs(img, hip_y, bottom):
+    """Stretch the rows from the hips down by LEG_STRETCH (nearest-neighbour, so pixels stay crisp).
+    Returns the taller image and the new index of the bottom row."""
+    if LEG_STRETCH <= 0 or hip_y >= img.shape[0]:
+        return img, bottom
+    hip_y = max(0, int(hip_y))
+    legs = img[hip_y:]
+    n = legs.shape[0]
+    new_n = int(round(n * (1 + LEG_STRETCH)))
+    idx = np.minimum((np.arange(new_n) * n / new_n).astype(int), n - 1)
+    out = np.concatenate([img[:hip_y], legs[idx]], axis=0)
+    return out, bottom + (new_n - n)
 
 
 def shift_region(img, y0, y1, dx, dy, x_mask=None):
@@ -222,6 +238,17 @@ def build(src, name, portrait_name, anim_files=None, fps_override=None):
         ax, _ = feet_anchor(img)
         waist = top + int((bottom - top) * 0.55)
         info[d] = (ax, top, waist, bottom)
+    # hips sit at ~55% of the pose height; used to find the legs in every animation frame
+    leg_len = {d: info[d][3] - info[d][2] for d in DIRS}
+
+    def placed(img, d, bottom, stretch, dx=0, dy=0, hip=None):
+        """place() with the legs stretched first; hip defaults to the pose's leg length above `bottom`."""
+        ax = info[d][0]
+        if stretch and LEG_STRETCH > 0:
+            if hip is None:
+                hip = bottom - leg_len[d]
+            img, bottom = stretch_legs(img, hip, bottom)
+        return place(img, ax, bottom, dx, dy)
 
     def from_gifs(kind):
         """Align every frame of a direction with one shared anchor so the feet don't jitter."""
@@ -233,7 +260,14 @@ def build(src, name, portrait_name, anim_files=None, fps_override=None):
             for fr in frames:
                 union[fr[:, :, 3] > 0] = fr[fr[:, :, 3] > 0]
             ax, bottom = feet_anchor(union)
-            res[d] = [place(fr, ax, bottom) for fr in frames]
+            if kind in STRETCH_KINDS and LEG_STRETCH > 0:
+                hip = bottom - leg_len[d]
+                res[d] = []
+                for fr in frames:
+                    tall, new_bottom = stretch_legs(fr, hip, bottom)
+                    res[d].append(place(tall, ax, new_bottom))
+            else:
+                res[d] = [place(fr, ax, bottom) for fr in frames]
         return res
 
     def gif_fps(kind, default):
@@ -245,7 +279,7 @@ def build(src, name, portrait_name, anim_files=None, fps_override=None):
         res = {}
         for d in DIRS:
             ax, _, _, bottom = info[d]
-            res[d] = [place(rgba(p), ax, bottom) for p in provided[kind][d]]
+            res[d] = [placed(rgba(p), d, bottom, kind in STRETCH_KINDS) for p in provided[kind][d]]
         return res
 
     # idle
@@ -257,7 +291,7 @@ def build(src, name, portrait_name, anim_files=None, fps_override=None):
         idle = {}
         for d, img in poses.items():
             ax, top, waist, bottom = info[d]
-            idle[d] = [place(breathe(img, top, waist, a), ax, bottom) for a in (0, 0, 1, 1)]
+            idle[d] = [placed(breathe(img, top, waist, a), d, bottom, True, hip=waist) for a in (0, 0, 1, 1)]
         write("idle", idle, 4, True)
 
     # walk
@@ -269,7 +303,7 @@ def build(src, name, portrait_name, anim_files=None, fps_override=None):
         walk = {}
         for d, img in poses.items():
             ax, top, waist, bottom = info[d]
-            walk[d] = [place(walk_frame(img, d, f / 8 * 2 * math.pi, top, waist, bottom, ax), ax, bottom)
+            walk[d] = [placed(walk_frame(img, d, f / 8 * 2 * math.pi, top, waist, bottom, ax), d, bottom, True, hip=waist)
                        for f in range(8)]
         write("walk", walk, 10, True)
 
@@ -286,7 +320,8 @@ def build(src, name, portrait_name, anim_files=None, fps_override=None):
         for d, img in poses.items():
             ax, top, waist, bottom = info[d]
             vx, vy = DIR_VEC[d]
-            attack[d] = [place(img, ax, bottom, dx=int(round(vx * k)), dy=int(round(vy * k * 0.5))) for k in lunge]
+            attack[d] = [placed(img, d, bottom, True, dx=int(round(vx * k)), dy=int(round(vy * k * 0.5)), hip=waist)
+                         for k in lunge]
         write("attack", attack, 16, False, hit=3)
 
     # any other animation passed with --anim (e.g. dodge, hurt, death): one-shot by default
@@ -349,7 +384,10 @@ if __name__ == "__main__":
     ap.add_argument("--anim", action="append", default=[], metavar="KIND=PATTERN",
                     help='e.g. walk="~/Downloads/hero_walking_{dir}.gif" (idle, walk, attack, dodge, or any name)')
     ap.add_argument("--fps", action="append", default=[], metavar="KIND=FPS", help="e.g. walk=10")
+    ap.add_argument("--leg-stretch", type=float, default=0.0,
+                    help="make the legs longer in idle/walk/attack, e.g. 0.12 = 12%% (originals are not changed)")
     a = ap.parse_args()
+    LEG_STRETCH = a.leg_stretch
     anims = dict(x.split("=", 1) for x in a.anim)
     fps = {k: float(v) for k, v in (x.split("=", 1) for x in a.fps)}
     print(f"Importing {a.source} -> Art/Characters/{a.name}/")

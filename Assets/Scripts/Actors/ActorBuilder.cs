@@ -11,14 +11,16 @@ public static class ActorBuilder
         go.transform.SetParent(parent);
         go.transform.position = pos;
 
-        var shadow = Iso.Child(go.transform, "Shadow");
-        shadow.transform.localScale = Vector3.one * Mathf.Max(0.6f, footRadius * 5f);
-        Iso.AddSprite(shadow, SpriteFactory.Shadow, Color.white, Iso.GroundDecalOrder);
+        // small, faint contact shadow right under the feet, plus a silhouette shadow cast on the ground
+        var contact = Iso.Child(go.transform, "ContactShadow");
+        contact.transform.localScale = Vector3.one * Mathf.Max(0.4f, footRadius * 3f);
+        Iso.AddSprite(contact, SpriteFactory.Shadow, new Color(1f, 1f, 1f, 0.6f), Iso.GroundDecalOrder);
 
         var body = Iso.Child(go.transform, "Body");
         var sr = Iso.AddSprite(body, null, Color.white);
         anim = body.AddComponent<CharacterAnimator>();
         anim.Init(ArtLibrary.Character(sheet), sr);
+        CastShadow.Attach(go.transform, sr);
 
         var rb = go.AddComponent<Rigidbody2D>();
         rb.gravityScale = 0f;
