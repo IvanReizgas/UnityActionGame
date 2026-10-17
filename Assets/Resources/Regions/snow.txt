@@ -19,24 +19,26 @@ H snow house
 F snow campfire
 h snow npc:hunter
 w snow enemy:frost_wolf
+M snow mountain
+N snow mountain_small
 s snow_path entry:from_forest
 1 snow_path exit:forest:from_snow
 
 [map]
-PPPPP.PPPP.P.PPPPPPPP.PPP.P.PPPPPPPPPPP.PPPPPP
-PPPPPPPPPPPPPPPRPPP.PPPPPPPPPPP.PPPPPPPPPPPP.P
-P........P..R..PPP.....RP......P...RP..R...P.P
-......P........P..P.P.PP..P.................PP
-PP....P.P.....PP....P.PP....P.....P..P......PP
-.P..............P..P....P..........P.P.P....PP
-PP......w..P..P.....P.....PP..P..R...w.P....PP
-PP.....R....P.....P.....R.PP.....PP.PP..P...PP
-PP..........P.........P........PP.....PwR...P.
+PPPP.......P....PPPPP.......PPPPPPPPPPP.PPPPPP
+PPPP......PP....PPP.PP......PPP.P....PPPPPPP.P
+P............N..PP......M......P.............P
+......M...........P.P...........N............P
+PP............PP....P.......P................P
+.P..............P..P....P............M...M...P
+PP......w..P..P.....P.....PP..P..R...........P
+PP.....R....P.....P.....R.PP.....PP..........P
+PP...w......P.........P........PP.....P.R...P.
 P.........P.........P.P..R..................PP
-P.R....R......i.....P.PP............P.......PP
-PP.R.P....iiiiiiiiiP.........H..........PP.RPP
-.P.....P.iiiiiiiiiii................RPP.....P.
-RP..P.RPiiiiiiiiiiiii................R.......P
+P......R......i.....P.PP............P.......PP
+PP........iiiiiiiiiP.........H..........PP.RPP
+.P.N...P.iiiiiiiiiii................RPP.....P.
+RP....RPiiiiiiiiiiiii................R.......P
 P.....Piiiiiiiiiiiiiii...............P.P..P..P
 PP.....iiiiiiiiiiiiiii.P.....h.F..........P..P
 PP....iiiiiiiiiiiiiiiii..............P..P.PPP.

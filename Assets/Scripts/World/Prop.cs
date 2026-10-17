@@ -23,6 +23,8 @@ public class Prop : MonoBehaviour
                 var cap = go.AddComponent<CapsuleCollider2D>();
                 cap.direction = CapsuleDirection2D.Horizontal;
                 cap.size = new Vector2(def.radius * 2f, def.radius * 2f * Iso.YScale);
+                // Unity auto-centres a new collider on the sprite (i.e. up in the tree canopy); keep it at the base
+                cap.offset = Vector2.zero;
                 break;
             case "diamond":
                 var poly = go.AddComponent<PolygonCollider2D>();

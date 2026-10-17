@@ -155,6 +155,30 @@
       "halfHeight": 0,
       "offsetX": 0.0,
       "offsetY": 0.0
+    },
+    {
+      "name": "mountain",
+      "pivotX": 150,
+      "pivotY": 72,
+      "fade": true,
+      "colliderType": "ellipse",
+      "radius": 1.75,
+      "halfWidth": 0,
+      "halfHeight": 0,
+      "offsetX": 0.5,
+      "offsetY": 0.5
+    },
+    {
+      "name": "mountain_small",
+      "pivotX": 100,
+      "pivotY": 50,
+      "fade": true,
+      "colliderType": "ellipse",
+      "radius": 1.15,
+      "halfWidth": 0,
+      "halfHeight": 0,
+      "offsetX": 0.5,
+      "offsetY": 0.5
     }
   ]
 }
