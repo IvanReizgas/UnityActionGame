@@ -26,6 +26,7 @@ public class Player : MonoBehaviour
     // Dev/test hooks (used by ScreenshotMode): fake movement input and a dodge request.
     public static Vector2? DebugMove;
     public static bool DebugDodge;
+    public static bool DebugAttack;
 
     Rigidbody2D rb;
     Vector2 move;               // ground space
@@ -106,7 +107,8 @@ public class Player : MonoBehaviour
 
         if (!attacking)
         {
-            if (Input.GetMouseButtonDown(0)) Attack(MouseDirection());
+            if (DebugAttack) { DebugAttack = false; Attack(move != Vector2.zero ? move : Anim.Facing); }
+            else if (Input.GetMouseButtonDown(0)) Attack(MouseDirection());
             else if (Input.GetKeyDown(KeyCode.J)) Attack(move != Vector2.zero ? move : Anim.Facing);
             else if ((Input.GetKeyDown(KeyCode.Space) || DebugDodge) && rollCd <= 0f) { DebugDodge = false; Roll(); return; } // don't let the walk/idle code below override the dodge
         }

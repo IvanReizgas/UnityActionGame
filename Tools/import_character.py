@@ -220,7 +220,7 @@ def walk_frame(img, d, phase, top, waist, bottom, anchor_x):
     return out
 
 
-def build(src, name, portrait_name, anim_files=None, fps_override=None):
+def build(src, name, portrait_name, anim_files=None, fps_override=None, hit_override=None):
     folder = load_source(src)
     base, meta = find_metadata(folder)
     rotations = find_rotations(folder)
@@ -230,6 +230,7 @@ def build(src, name, portrait_name, anim_files=None, fps_override=None):
     poses = {d: rgba(p) for d, p in rotations.items()}
     provided = export_animations(base, meta)
     fps_override = fps_override or {}
+    hit_override = hit_override or {}
     gif_anims = {}
     for kind, pattern in (anim_files or {}).items():
         per_dir, dur = {}, 100
@@ -304,8 +305,12 @@ def build(src, name, portrait_name, anim_files=None, fps_override=None):
                 for fr in frames:
                     # measure from the top of this frame's figure, so the same body rows are
                     # stretched in every frame even while the body bobs (prevents flicker)
-                    top = np.nonzero((fr[:, :, 3] > 0).any(axis=1))[0].min()
-                    hip = top + head_len[d] + torso_len[d]
+                    if kind == "attack":
+                        # feet stay planted in a strike, and a raised sword would be mistaken for the head
+                        hip = bottom - leg_len[d]
+                    else:
+                        top = np.nonzero((fr[:, :, 3] > 0).any(axis=1))[0].min()
+                        hip = top + head_len[d] + torso_len[d]
                     tall, new_bottom = stretch_legs(fr, hip, bottom, torso_len[d])
                     res[d].append(place(tall, ax, new_bottom))
             else:
@@ -355,7 +360,8 @@ def build(src, name, portrait_name, anim_files=None, fps_override=None):
     # attack
     if "attack" in gif_anims:
         n = len(gif_anims["attack"][0][DIRS[0]])
-        write("attack", from_gifs("attack"), gif_fps("attack", 14), False, hit=max(0, n // 2), source="from GIFs")
+        hit = hit_override.get("attack", max(0, n // 2))
+        write("attack", from_gifs("attack"), gif_fps("attack", 14), False, hit=hit, source=f"from GIFs, hit on frame {hit}")
     elif "attack" in provided:
         n = len(provided["attack"][DIRS[0]])
         write("attack", from_export("attack"), 14, False, hit=max(0, n // 2))
@@ -430,6 +436,8 @@ if __name__ == "__main__":
     ap.add_argument("--anim", action="append", default=[], metavar="KIND=PATTERN",
                     help='e.g. walk="~/Downloads/hero_walking_{dir}.gif" (idle, walk, attack, dodge, or any name)')
     ap.add_argument("--fps", action="append", default=[], metavar="KIND=FPS", help="e.g. walk=10")
+    ap.add_argument("--hit", action="append", default=[], metavar="KIND=FRAME",
+                    help="frame (0-based) on which an attack deals damage, e.g. attack=6 (default: middle frame)")
     ap.add_argument("--leg-stretch", type=float, default=0.0,
                     help="make the legs longer in idle/walk/attack, e.g. 0.12 = 12%% (originals are not changed)")
     ap.add_argument("--torso-stretch", type=float, default=0.0,
@@ -446,4 +454,5 @@ if __name__ == "__main__":
     anims = dict(x.split("=", 1) for x in a.anim)
     fps = {k: float(v) for k, v in (x.split("=", 1) for x in a.fps)}
     print(f"Importing {a.source} -> Art/Characters/{a.name}/")
-    build(a.source, a.name, a.portrait, anims, fps)
+    hits = {k: int(v) for k, v in (x.split("=", 1) for x in a.hit)}
+    build(a.source, a.name, a.portrait, anims, fps, hits)

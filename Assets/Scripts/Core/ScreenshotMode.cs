@@ -8,6 +8,7 @@ using UnityEngine;
 //   -near <npc or enemy id>   stand next to it
 //   -walk <dx> <dy>           hold a movement direction (e.g. -walk -1 0 walks west)
 //   -dodge-at <seconds>       trigger a dodge and capture that many seconds into it
+//   -attack-at <seconds>      swing the sword and capture that many seconds into the swing
 public class ScreenshotMode : MonoBehaviour
 {
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -71,6 +72,13 @@ public class ScreenshotMode : MonoBehaviour
             yield return new WaitForSecondsRealtime(1f);
             Player.DebugDodge = true;
             delay = float.Parse(Arg("-dodge-at"), System.Globalization.CultureInfo.InvariantCulture);
+        }
+        if (Arg("-attack-at") != null)
+        {
+            // swing the sword, then capture this many seconds into the swing
+            yield return new WaitForSecondsRealtime(1f);
+            Player.DebugAttack = true;
+            delay = float.Parse(Arg("-attack-at"), System.Globalization.CultureInfo.InvariantCulture);
         }
         yield return new WaitForSecondsRealtime(delay);
         ScreenCapture.CaptureScreenshot(Arg("-screenshot"));

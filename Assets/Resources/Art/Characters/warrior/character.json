@@ -24,10 +24,10 @@
     {
       "name": "attack",
       "file": "attack",
-      "frames": 6,
-      "fps": 16,
+      "frames": 9,
+      "fps": 16.0,
       "loop": false,
-      "hitFrame": 3
+      "hitFrame": 6
     },
     {
       "name": "dodge",
